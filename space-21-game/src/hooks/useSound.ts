@@ -7,10 +7,10 @@ interface SoundConfig {
 }
 
 const SOUNDS: SoundConfig = {
-  cardDeal: '/assets/sounds/card_deal.mp3',
-  win: '/assets/sounds/win.mp3',
-  lose: '/assets/sounds/lose.mp3',
-  click: '/assets/sounds/click.mp3',
+  cardDeal: '/sound/deal_cards.mp3',
+  win: '/sound/win.mp3',
+  lose: '/sound/lose.mp3',
+  click: '/sound/click.mp3',
 };
 
 export function useSound() {
@@ -18,6 +18,7 @@ export function useSound() {
   const [isMuted, setIsMuted] = useState(false);
   const audioCache = useRef<Map<string, HTMLAudioElement>>(new Map());
   const currentMusic = useRef<HTMLAudioElement | null>(null);
+  const audioUnlocked = useRef(false);
 
   // 预加载音效
   useEffect(() => {
@@ -26,6 +27,26 @@ export function useSound() {
       audio.preload = 'auto';
       audioCache.current.set(name, audio);
     });
+
+    // 解锁音频（用户首次交互时）
+    const unlockAudio = () => {
+      if (!audioUnlocked.current) {
+        audioCache.current.forEach(audio => {
+          audio.play().then(() => audio.pause()).catch(() => {});
+        });
+        audioUnlocked.current = true;
+        document.removeEventListener('click', unlockAudio);
+        document.removeEventListener('touchstart', unlockAudio);
+      }
+    };
+
+    document.addEventListener('click', unlockAudio);
+    document.addEventListener('touchstart', unlockAudio);
+
+    return () => {
+      document.removeEventListener('click', unlockAudio);
+      document.removeEventListener('touchstart', unlockAudio);
+    };
   }, []);
 
   const playSound = useCallback((soundName: string) => {
@@ -35,7 +56,7 @@ export function useSound() {
     if (audio) {
       audio.volume = volumes.sfx;
       audio.currentTime = 0;
-      audio.play().catch(() => {});
+      audio.play().catch(err => console.warn('音频播放失败:', soundName, err));
     }
   }, [isMuted, volumes.sfx]);
 
