@@ -3,6 +3,7 @@ import { GameScreen } from './components/game/GameScreen';
 import { useSound } from './hooks/useSound';
 import { useGameStore } from './store/gameStore';
 import { usePlayerStore } from './store/playerStore';
+import { SKILL_CARDS } from './data/skillCards';
 
 function App() {
   const { playSound } = useSound();
@@ -24,11 +25,17 @@ function App() {
   const result = useGameStore(state => state.result);
 
   const player = usePlayerStore(state => state.player);
+  const addSkillCard = usePlayerStore(state => state.addSkillCard);
 
   useEffect(() => {
     setPlaySound(playSound);
     initDeck();
     shuffleDeck();
+
+    // 添加测试技能卡
+    addSkillCard(SKILL_CARDS.peek_dealer);
+    addSkillCard(SKILL_CARDS.insurance);
+    addSkillCard(SKILL_CARDS.double_reward);
   }, []);
 
   useEffect(() => {

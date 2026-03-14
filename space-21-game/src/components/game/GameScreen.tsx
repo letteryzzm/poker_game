@@ -51,7 +51,7 @@ export function GameScreen(props: Props) {
       </div>
 
       {/* 主内容 */}
-      <div className="flex-1 p-6">
+      <div className="flex-1 p-6 relative">
         <GameTable
           dealerCards={props.dealerCards}
           playerCards={props.playerCards}
@@ -65,15 +65,8 @@ export function GameScreen(props: Props) {
           onDouble={props.onDouble}
           onNewGame={props.onNewGame}
         />
-      </div>
-
-      {/* 底部栏 */}
-      <div className="p-6 flex gap-4" style={{ backgroundColor: colors.cardBg }}>
-        <div className="flex-1 flex flex-col gap-3">
-          <StatusBar label="生命值" current={props.hp} max={props.maxHp} color={colors.danger} icon="❤️" />
-          <StatusBar label="护盾" current={props.shield} max={props.maxShield} color={colors.primary} icon="🛡️" />
-        </div>
-        <div className="flex items-center">
+        {/* 技能牌栏 - 右下角 */}
+        <div className="absolute bottom-6 right-6">
           <SkillCardBar />
         </div>
       </div>

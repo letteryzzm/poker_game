@@ -16,7 +16,7 @@ export function SkillCardBar() {
     }
   };
 
-  const quickSlots = inventory.skillCards.slice(0, 4);
+  const quickSlots = (inventory.skillCards || []).slice(0, 4);
 
   return (
     <div className="flex gap-2 p-2 bg-black/30 rounded-lg">

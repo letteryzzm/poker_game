@@ -88,12 +88,13 @@ export const usePlayerStore = create<PlayerStore>()(
         return true;
       },
       addSkillCard: (card) => set((state) => {
-        const existing = state.inventory.skillCards.find(s => s.card.id === card.id);
+        const skillCards = state.inventory.skillCards || [];
+        const existing = skillCards.find(s => s.card.id === card.id);
         if (existing) {
           return {
             inventory: {
               ...state.inventory,
-              skillCards: state.inventory.skillCards.map(s =>
+              skillCards: skillCards.map(s =>
                 s.card.id === card.id ? { ...s, count: s.count + 1 } : s
               )
             }
@@ -102,7 +103,7 @@ export const usePlayerStore = create<PlayerStore>()(
         return {
           inventory: {
             ...state.inventory,
-            skillCards: [...state.inventory.skillCards, { card, count: 1 }]
+            skillCards: [...skillCards, { card, count: 1 }]
           }
         };
       }),

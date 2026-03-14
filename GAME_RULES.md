@@ -256,6 +256,102 @@ function useDoubleReward() {
 3. **结算界面**：
    - 显示获得的技能卡（如果有）
 
+### 4.4 当前实现状态（v2.0）
+
+#### ✅ 已实现功能
+
+**1. 技能卡数据结构**
+- 完整的 SkillCard 类型定义
+- 8种技能卡配置（`skillCards.ts`）
+- 技能卡堆叠系统（SkillCardStack）
+
+**2. 背包系统**
+- playerStore 中的 skillCards 数组
+- addSkillCard() - 添加技能卡到背包
+- useSkillCard() - 使用技能卡（扣除库存、进入冷却）
+- reduceCooldowns() - 每局结束冷却-1
+
+**3. 技能卡UI**
+- SkillCard 组件 - 单个技能卡显示
+- SkillCardBar 组件 - 快捷栏（显示前4张）
+- 位置：游戏桌面右下角
+- 显示信息：
+  - 卡牌名称和描述
+  - 右下角：库存数量
+  - 冷却时：中间显示剩余回合数
+
+**4. 使用限制**
+- 状态检查：只能在 `status === 'playing'` 时使用
+- 库存检查：count > 0
+- 冷却检查：currentCooldown === 0
+- 使用后：库存-1，进入冷却
+
+**5. 冷却机制**
+- 每次 resetGame() 时，所有技能卡冷却-1
+- 冷却为0时可再次使用
+
+**6. 技能卡效果实现**
+
+✅ **保险（Insurance）**
+```typescript
+// 在 gameStore.stand() 中实现
+if (result === 'lose') {
+  const hasInsurance = activeSkills.includes('insurance');
+  moneyReward = hasInsurance ? -currentBet * 0.5 : -currentBet;
+}
+```
+
+✅ **双倍奖励（Double Reward）**
+```typescript
+// 在 gameStore.stand() 中实现
+if (result === 'win' || result === 'blackjack' || result === 'charlie') {
+  const hasDoubleReward = activeSkills.includes('double_reward');
+  if (hasDoubleReward) {
+    moneyReward = (reward.money - currentBet) * 2;
+  }
+}
+```
+
+#### ❌ 未实现功能
+
+**1. 技能卡效果（6个）**
+- ❌ 透视眼（peek_dealer）- 查看庄家底牌3秒
+- ❌ 额外抽牌（extra_hit）- 本局可多抽1张牌不爆
+- ❌ 强制停牌（force_stand）- 强制庄家停牌
+- ❌ 治疗（heal）- 恢复30点生命值（已移除HP系统）
+- ❌ 护盾增强（shield_boost）- 恢复20点护盾（已移除护盾系统）
+- ❌ 幸运加成（luck_boost）- 下3局掉落率+20%
+
+**2. 技能卡获取方式**
+- ❌ 赌局奖励掉落
+- ❌ 商店购买
+- ❌ 任务奖励
+
+**3. 背包界面**
+- ❌ 完整的背包UI（当前只有快捷栏）
+- ❌ 查看所有技能卡
+- ❌ 丢弃技能卡功能
+
+**4. 使用时机限制**
+- ❌ 不同技能卡的使用时机检查（BETTING vs PLAYER_TURN）
+- 当前：所有技能卡都在 PLAYING 状态使用
+
+#### 🔄 下一步开发建议
+
+**优先级1：完善核心技能卡效果**
+1. 实现透视眼效果（显示庄家底牌3秒）
+2. 实现额外抽牌效果（允许多抽1张不爆）
+3. 实现强制停牌效果（庄家不抽牌）
+
+**优先级2：技能卡获取**
+1. 赌局结束时随机掉落技能卡
+2. 添加简单的商店界面
+
+**优先级3：完整背包界面**
+1. 背包按钮打开完整背包
+2. 显示所有技能卡
+3. 支持丢弃功能
+
 ---
 
 ## 📊 五、数据配置
