@@ -1,5 +1,4 @@
 import { colors } from '@/styles/theme';
-import { StatusBar } from '../ui/StatusBar';
 import { GameTable } from './GameTable';
 import { SkillCardBar } from '../SkillCardBar';
 import type { PlayingCard, GameState } from '@/types';
