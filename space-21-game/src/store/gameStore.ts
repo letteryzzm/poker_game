@@ -58,6 +58,13 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
   dealCards: () => {
     const { deck, playSound } = get();
+
+    // 检查牌组是否足够
+    if (deck.length < 4) {
+      console.error('牌组不足，无法发牌');
+      return;
+    }
+
     const newDeck = [...deck];
 
     const playerHand = [newDeck.pop()!, newDeck.pop()!];
@@ -77,6 +84,13 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
   hit: () => {
     const { deck, playerHand, currentBet, playSound, activeSkills } = get();
+
+    // 检查牌组是否有牌
+    if (deck.length < 1) {
+      console.error('牌组不足，无法要牌');
+      return;
+    }
+
     const newDeck = [...deck];
     const newHand = [...playerHand, newDeck.pop()!];
     const score = calculateScore(newHand);
@@ -116,7 +130,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     let dealerScore = calculateScore(newDealerHand);
 
     // 庄家抽牌至17点以上
-    while (dealerScore < 17) {
+    while (dealerScore < 17 && newDeck.length > 0) {
       const card = newDeck.pop()!;
       newDealerHand.push({
         value: card.value,
