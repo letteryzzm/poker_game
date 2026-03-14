@@ -8,9 +8,6 @@
 .vscode/
 .idea/
 
-# Project configuration
-.claude/
-.trellis/
 
 # Logs
 *.log

@@ -6,6 +6,11 @@
 
 **职责**：21点核心算法实现
 
+**发牌规则**：
+- 玩家：2张明牌
+- 庄家：1张明牌 + 1张暗牌（hidden: true）
+- 庄家回合时翻开暗牌
+
 #### calculateScore 函数
 
 ```typescript
@@ -364,3 +369,65 @@ export async function loadNPCs(): Promise<Record<string, NPC>> {
   return response.json();
 }
 ```
+
+## 破产保护机制
+
+### bankruptcyProtection.ts
+
+**职责**：防止玩家破产无法继续游戏
+
+#### canClaimDailyReward 函数
+
+```typescript
+/**
+ * 检查是否可以领取每日救济金
+ * @param lastClaimTime 上次领取时间戳
+ * @returns 是否可以领取
+ */
+export function canClaimDailyReward(lastClaimTime: number): boolean {
+  const now = Date.now();
+  const oneDayMs = 24 * 60 * 60 * 1000;
+  return (now - lastClaimTime) >= oneDayMs;
+}
+```
+
+#### claimDailyReward 函数
+
+```typescript
+/**
+ * 领取每日救济金
+ * @param player 玩家对象
+ * @returns 更新后的玩家对象
+ */
+export function claimDailyReward(player: Player): Player {
+  const DAILY_REWARD = 100; // 每日救济金金额
+  
+  return {
+    ...player,
+    money: player.money + DAILY_REWARD,
+    lastDailyReward: Date.now()
+  };
+}
+```
+
+#### shouldShowBankruptcyHelp 函数
+
+```typescript
+/**
+ * 判断是否显示破产帮助提示
+ * @param player 玩家对象
+ * @param minBet 当前场景最低下注
+ * @returns 是否显示提示
+ */
+export function shouldShowBankruptcyHelp(
+  player: Player,
+  minBet: number
+): boolean {
+  return player.money < minBet;
+}
+```
+
+**破产保护规则**：
+- 每日救济金：100星币
+- 冷却时间：24小时
+- 触发条件：玩家星币 < 当前场景最低下注

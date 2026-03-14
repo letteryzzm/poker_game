@@ -68,11 +68,10 @@ export interface GameState {
 export interface Player {
   name: string;
   money: number;                    // 星币
-  hp: number;                       // 当前HP
-  maxHp: number;                    // 最大HP
   level: number;                    // 等级
   exp: number;                      // 经验值
   currentScene: string;             // 当前场景ID
+  lastDailyReward: number;          // 上次领取每日救济金时间戳
 }
 
 export interface Inventory {
@@ -102,8 +101,8 @@ export interface Scene {
 }
 
 export interface UnlockRequirement {
-  type: 'money' | 'item' | 'level';
-  value: number | string;
+  type: 'money' | 'level';
+  value: number;
 }
 ```
 
