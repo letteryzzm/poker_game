@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { Player, Inventory, ResourceCard, CardStack } from '@/types';
+import type { Player, Inventory, ResourceCard, CardStack, SkillCard } from '@/types';
 
 interface PlayerStore {
   player: Player;
@@ -8,6 +8,9 @@ interface PlayerStore {
   updateMoney: (amount: number) => void;
   setScene: (sceneId: string) => void;
   addCard: (card: ResourceCard, count?: number) => void;
+  addSkillCard: (card: SkillCard) => void;
+  useSkillCard: (cardId: string) => boolean;
+  reduceCooldowns: () => void;
   claimDailyReward: () => boolean;
 }
 
@@ -29,6 +32,7 @@ export const usePlayerStore = create<PlayerStore>()(
       inventory: {
         handDeck: [],
         warehouse: [],
+        skillCards: [],
         maxWeight: 100,
         currentWeight: 0
       },
@@ -82,7 +86,60 @@ export const usePlayerStore = create<PlayerStore>()(
           }
         }));
         return true;
-      }
+      },
+      addSkillCard: (card) => set((state) => {
+        const existing = state.inventory.skillCards.find(s => s.card.id === card.id);
+        if (existing) {
+          return {
+            inventory: {
+              ...state.inventory,
+              skillCards: state.inventory.skillCards.map(s =>
+                s.card.id === card.id ? { ...s, count: s.count + 1 } : s
+              )
+            }
+          };
+        }
+        return {
+          inventory: {
+            ...state.inventory,
+            skillCards: [...state.inventory.skillCards, { card, count: 1 }]
+          }
+        };
+      }),
+      useSkillCard: (cardId) => {
+        const { inventory } = get();
+        const stack = inventory.skillCards.find(s => s.card.id === cardId);
+        if (!stack || stack.count === 0 || stack.card.currentCooldown > 0) {
+          return false;
+        }
+        set((state) => ({
+          inventory: {
+            ...state.inventory,
+            skillCards: state.inventory.skillCards.map(s =>
+              s.card.id === cardId
+                ? {
+                    ...s,
+                    count: s.count - 1,
+                    card: { ...s.card, currentCooldown: s.card.cooldown }
+                  }
+                : s
+            )
+          }
+        }));
+        return true;
+      },
+      reduceCooldowns: () => set((state) => ({
+        inventory: {
+          ...state.inventory,
+          skillCards: state.inventory.skillCards.map(s => ({
+            ...s,
+            card: {
+              ...s.card,
+              currentCooldown: Math.max(0, s.card.currentCooldown - 1)
+            }
+          }))
+        }
+      }))
     }),
     {
       name: 'player-storage',

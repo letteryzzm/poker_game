@@ -1,4 +1,5 @@
 import type { CardStack } from './card';
+import type { SkillCardStack } from './skillCard';
 
 // 玩家信息
 export interface Player {
@@ -18,6 +19,7 @@ export interface Player {
 export interface Inventory {
   handDeck: CardStack[];
   warehouse: CardStack[];
+  skillCards: SkillCardStack[];
   maxWeight: number;
   currentWeight: number;
 }
