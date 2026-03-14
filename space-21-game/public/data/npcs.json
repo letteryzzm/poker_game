@@ -1,0 +1,35 @@
+{
+  "robot_dealer": {
+    "id": "robot_dealer",
+    "name": "机器人教官",
+    "avatar": "/assets/npcs/robot_dealer.png",
+    "dialogue": {
+      "greeting": "欢迎来到新手矿区，我来教你基础规则",
+      "win": "干得不错！继续保持",
+      "lose": "别灰心，多练习就能掌握技巧"
+    },
+    "shop": null
+  },
+  "veteran_miner": {
+    "id": "veteran_miner",
+    "name": "老矿工",
+    "avatar": "/assets/npcs/veteran_miner.png",
+    "dialogue": {
+      "greeting": "中级矿区风险更高，小心行事",
+      "win": "你很有天赋！",
+      "lose": "运气不好，下次会更好"
+    },
+    "shop": null
+  },
+  "elite_dealer": {
+    "id": "elite_dealer",
+    "name": "精英荷官",
+    "avatar": "/assets/npcs/elite_dealer.png",
+    "dialogue": {
+      "greeting": "高级矿区，只有强者才能生存",
+      "win": "令人印象深刻的表现",
+      "lose": "这里不适合弱者"
+    },
+    "shop": null
+  }
+}

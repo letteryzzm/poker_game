@@ -1,0 +1,47 @@
+{
+  "tutorial_zone": {
+    "id": "tutorial_zone",
+    "displayName": "新手矿区",
+    "description": "适合新手的安全矿区",
+    "backgroundImage": "/assets/scenes/tutorial_zone.png",
+    "npcDealer": "robot_dealer",
+    "minBet": 10,
+    "maxBet": 100,
+    "specialRules": [],
+    "cardPool": ["iron_ore", "copper_ore", "ice"],
+    "connectedScenes": ["mid_zone"],
+    "unlockRequirement": null
+  },
+  "mid_zone": {
+    "id": "mid_zone",
+    "displayName": "中级矿区",
+    "description": "风险与收益并存的矿区",
+    "backgroundImage": "/assets/scenes/mid_zone.png",
+    "npcDealer": "veteran_miner",
+    "minBet": 50,
+    "maxBet": 500,
+    "specialRules": [],
+    "cardPool": ["iron_ore", "copper_ore", "gold_ore"],
+    "connectedScenes": ["tutorial_zone", "high_zone"],
+    "unlockRequirement": {
+      "type": "money",
+      "value": 500
+    }
+  },
+  "high_zone": {
+    "id": "high_zone",
+    "displayName": "高级矿区",
+    "description": "高风险高回报的危险区域",
+    "backgroundImage": "/assets/scenes/high_zone.png",
+    "npcDealer": "elite_dealer",
+    "minBet": 200,
+    "maxBet": 2000,
+    "specialRules": [],
+    "cardPool": ["gold_ore", "titanium"],
+    "connectedScenes": ["mid_zone"],
+    "unlockRequirement": {
+      "type": "level",
+      "value": 5
+    }
+  }
+}

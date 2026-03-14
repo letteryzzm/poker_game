@@ -1,0 +1,62 @@
+{
+  "iron_ore": {
+    "id": "iron_ore",
+    "name": "Iron Ore",
+    "displayName": "铁矿石",
+    "type": "ore",
+    "description": "最常见的矿石资源",
+    "weight": 5,
+    "maxStack": 999,
+    "rarity": "common",
+    "price": 50,
+    "imagePath": "/assets/resources/iron_ore.png"
+  },
+  "copper_ore": {
+    "id": "copper_ore",
+    "name": "Copper Ore",
+    "displayName": "铜矿石",
+    "type": "ore",
+    "description": "用于制造电子设备",
+    "weight": 4,
+    "maxStack": 999,
+    "rarity": "common",
+    "price": 80,
+    "imagePath": "/assets/resources/copper_ore.png"
+  },
+  "ice": {
+    "id": "ice",
+    "name": "Ice",
+    "displayName": "冰块",
+    "type": "ore",
+    "description": "可提炼为水资源",
+    "weight": 3,
+    "maxStack": 999,
+    "rarity": "common",
+    "price": 30,
+    "imagePath": "/assets/resources/ice.png"
+  },
+  "gold_ore": {
+    "id": "gold_ore",
+    "name": "Gold Ore",
+    "displayName": "金矿石",
+    "type": "ore",
+    "description": "珍贵的金属资源",
+    "weight": 8,
+    "maxStack": 99,
+    "rarity": "rare",
+    "price": 500,
+    "imagePath": "/assets/resources/gold_ore.png"
+  },
+  "titanium": {
+    "id": "titanium",
+    "name": "Titanium",
+    "displayName": "钛合金",
+    "type": "ore",
+    "description": "高强度轻质金属",
+    "weight": 6,
+    "maxStack": 99,
+    "rarity": "epic",
+    "price": 1200,
+    "imagePath": "/assets/resources/titanium.png"
+  }
+}
