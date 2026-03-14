@@ -1,6 +1,7 @@
 import { colors } from '@/styles/theme';
 import { StatusBar } from '../ui/StatusBar';
 import { GameTable } from './GameTable';
+import { SkillCardBar } from '../SkillCardBar';
 import type { PlayingCard, GameState } from '@/types';
 
 interface Props {
@@ -67,12 +68,13 @@ export function GameScreen(props: Props) {
       </div>
 
       {/* 底部栏 */}
-      <div className="h-50 p-6 flex gap-4" style={{ backgroundColor: colors.cardBg }}>
-        <div className="flex-1">
+      <div className="p-6 flex gap-4" style={{ backgroundColor: colors.cardBg }}>
+        <div className="flex-1 flex flex-col gap-3">
           <StatusBar label="生命值" current={props.hp} max={props.maxHp} color={colors.danger} icon="❤️" />
-        </div>
-        <div className="flex-1">
           <StatusBar label="护盾" current={props.shield} max={props.maxShield} color={colors.primary} icon="🛡️" />
+        </div>
+        <div className="flex items-center">
+          <SkillCardBar />
         </div>
       </div>
     </div>

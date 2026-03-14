@@ -31,7 +31,7 @@ export function GameTable({ dealerCards, playerCards, dealerScore, playerScore, 
   const canDouble = isPlaying && playerCards.length === 2;
 
   return (
-    <div className="w-full h-full rounded-2xl p-8 flex flex-col gap-5" style={{ backgroundColor: '#1B5E20' }}>
+    <div className="w-full h-full rounded-2xl p-8 flex flex-col gap-5" style={{ backgroundColor: 'transparent' }}>
       {/* 庄家区域 */}
       <div className="flex flex-col gap-3">
         <div className="flex justify-between items-center">
