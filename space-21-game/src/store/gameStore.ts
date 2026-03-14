@@ -19,6 +19,24 @@ interface GameStore extends GameState {
   setPlaySound: (fn: (sound: string) => void) => void;
 }
 
+// 创建新牌组
+const createNewDeck = (): PlayingCard[] => {
+  const suits: Array<'c' | 'h' | 's' | 'd'> = ['c', 'h', 's', 'd'];
+  const deck: PlayingCard[] = [];
+
+  suits.forEach(suit => {
+    for (let i = 1; i <= 13; i++) {
+      deck.push({
+        value: i === 1 ? 11 : Math.min(i, 10),
+        suit,
+        face: `${suit}${i}`
+      });
+    }
+  });
+
+  return deck.sort(() => Math.random() - 0.5);
+};
+
 export const useGameStore = create<GameStore>((set, get) => ({
   status: 'idle',
   deck: [],
@@ -34,19 +52,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   setPlaySound: (fn) => set({ playSound: fn }),
 
   initDeck: () => {
-    const suits: Array<'c' | 'h' | 's' | 'd'> = ['c', 'h', 's', 'd'];
-    const deck: PlayingCard[] = [];
-
-    suits.forEach(suit => {
-      for (let i = 1; i <= 13; i++) {
-        deck.push({
-          value: i === 1 ? 11 : Math.min(i, 10),
-          suit,
-          face: `${suit}${i}`
-        });
-      }
-    });
-
+    const deck = createNewDeck();
     set({ deck, status: 'idle' });
   },
 
@@ -57,12 +63,11 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
 
   dealCards: () => {
-    const { deck, playSound } = get();
+    let { deck, playSound } = get();
 
-    // 检查牌组是否足够
+    // 自动补充牌组
     if (deck.length < 4) {
-      console.error('牌组不足，无法发牌');
-      return;
+      deck = [...deck, ...createNewDeck()];
     }
 
     const newDeck = [...deck];
@@ -83,12 +88,11 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
 
   hit: () => {
-    const { deck, playerHand, currentBet, playSound, activeSkills } = get();
+    let { deck, playerHand, currentBet, playSound, activeSkills } = get();
 
-    // 检查牌组是否有牌
+    // 自动补充牌组
     if (deck.length < 1) {
-      console.error('牌组不足，无法要牌');
-      return;
+      deck = [...deck, ...createNewDeck()];
     }
 
     const newDeck = [...deck];
@@ -119,8 +123,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
 
   stand: () => {
-    const { deck, playerHand, dealerHand, currentBet, playSound, activeSkills } = get();
-    const newDeck = [...deck];
+    let { deck, playerHand, dealerHand, currentBet, playSound, activeSkills } = get();
+    let newDeck = [...deck];
     const newDealerHand = dealerHand.map(c => ({
       value: c.value,
       suit: c.suit,
@@ -130,7 +134,11 @@ export const useGameStore = create<GameStore>((set, get) => ({
     let dealerScore = calculateScore(newDealerHand);
 
     // 庄家抽牌至17点以上
-    while (dealerScore < 17 && newDeck.length > 0) {
+    while (dealerScore < 17) {
+      // 自动补充牌组
+      if (newDeck.length < 1) {
+        newDeck = [...newDeck, ...createNewDeck()];
+      }
       const card = newDeck.pop()!;
       newDealerHand.push({
         value: card.value,
