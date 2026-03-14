@@ -1,11 +1,12 @@
 import { create } from 'zustand';
-import type { PlayingCard, GameState } from '@/types';
+import type { PlayingCard, GameState, SkillCardEffect } from '@/types';
 import { calculateScore, determineResult } from '@/utils/blackjackLogic';
 import { calculateReward } from '@/utils/rewardSystem';
 import { usePlayerStore } from './playerStore';
 import { useSceneStore } from './sceneStore';
 
 interface GameStore extends GameState {
+  activeSkills: SkillCardEffect[];
   initDeck: () => void;
   shuffleDeck: () => void;
   dealCards: () => void;
@@ -13,6 +14,7 @@ interface GameStore extends GameState {
   stand: () => void;
   placeBet: (amount: number) => void;
   resetGame: () => void;
+  activateSkill: (effect: SkillCardEffect) => void;
   playSound?: (sound: string) => void;
   setPlaySound: (fn: (sound: string) => void) => void;
 }
@@ -27,6 +29,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   currentBet: 0,
   result: undefined,
   playSound: undefined,
+  activeSkills: [],
 
   setPlaySound: (fn) => set({ playSound: fn }),
 
@@ -73,7 +76,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
 
   hit: () => {
-    const { deck, playerHand, currentBet, playSound } = get();
+    const { deck, playerHand, currentBet, playSound, activeSkills } = get();
     const newDeck = [...deck];
     const newHand = [...playerHand, newDeck.pop()!];
     const score = calculateScore(newHand);
@@ -82,7 +85,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
     if (score > 21) {
       playSound?.('lose');
-      usePlayerStore.getState().updateMoney(-currentBet);
+      const hasInsurance = activeSkills.includes('insurance');
+      const loss = hasInsurance ? currentBet * 0.5 : currentBet;
+      usePlayerStore.getState().updateMoney(-loss);
       set({
         deck: newDeck,
         playerHand: newHand,
@@ -100,7 +105,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
 
   stand: () => {
-    const { deck, playerHand, dealerHand, currentBet, playSound } = get();
+    const { deck, playerHand, dealerHand, currentBet, playSound, activeSkills } = get();
     const newDeck = [...deck];
     const newDealerHand = dealerHand.map(c => ({
       value: c.value,
@@ -135,7 +140,20 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const cardPool = Object.values(useSceneStore.getState().cards);
     if (result) {
       const reward = calculateReward(result, currentBet, cardPool);
-      usePlayerStore.getState().updateMoney(reward.money - currentBet);
+      let moneyReward = reward.money - currentBet;
+
+      // 应用技能效果
+      if (result === 'lose') {
+        const hasInsurance = activeSkills.includes('insurance');
+        moneyReward = hasInsurance ? -currentBet * 0.5 : -currentBet;
+      } else if (result === 'win' || result === 'blackjack' || result === 'charlie') {
+        const hasDoubleReward = activeSkills.includes('double_reward');
+        if (hasDoubleReward) {
+          moneyReward = (reward.money - currentBet) * 2;
+        }
+      }
+
+      usePlayerStore.getState().updateMoney(moneyReward);
       reward.cards.forEach(card => {
         usePlayerStore.getState().addCard(card, 1);
       });
@@ -155,6 +173,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
 
   resetGame: () => {
+    usePlayerStore.getState().reduceCooldowns();
     set({
       playerHand: [],
       dealerHand: [],
@@ -162,7 +181,12 @@ export const useGameStore = create<GameStore>((set, get) => ({
       dealerScore: 0,
       currentBet: 0,
       result: undefined,
-      status: 'idle'
+      status: 'idle',
+      activeSkills: []
     });
-  }
+  },
+
+  activateSkill: (effect) => set((state) => ({
+    activeSkills: [...state.activeSkills, effect]
+  }))
 }));

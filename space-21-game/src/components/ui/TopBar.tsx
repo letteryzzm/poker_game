@@ -12,7 +12,9 @@ export function TopBar() {
     }
   };
 
-  const canClaim = Date.now() - player.lastDailyReward >= 24 * 60 * 60 * 1000;
+  // eslint-disable-next-line react-hooks/purity
+  const now = Date.now();
+  const canClaim = now - player.lastDailyReward >= 24 * 60 * 60 * 1000;
   const needHelp = player.money < 50;
 
   return (

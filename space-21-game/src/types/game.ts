@@ -1,4 +1,5 @@
 import type { PlayingCard } from './card';
+import type { SkillCardEffect } from './skillCard';
 
 // 游戏状态
 export interface GameState {
@@ -10,4 +11,5 @@ export interface GameState {
   dealerScore: number;
   currentBet: number;
   result?: 'win' | 'lose' | 'push' | 'blackjack' | 'charlie';
+  activeSkills: SkillCardEffect[];
 }
