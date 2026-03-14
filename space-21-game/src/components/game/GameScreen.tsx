@@ -24,7 +24,15 @@ interface Props {
 
 export function GameScreen(props: Props) {
   return (
-    <div className="w-screen h-screen flex flex-col" style={{ backgroundColor: colors.bgDark }}>
+    <div
+      className="w-screen h-screen flex flex-col"
+      style={{
+        backgroundImage: 'url(/assets/scenes/VBWoSzFmmKFo7Uh6Qmshf3.png)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}
+    >
       {/* 顶部栏 */}
       <div className="h-20 flex items-center justify-between px-6" style={{ backgroundColor: `${colors.cardBg}E6` }}>
         <div className="flex items-center gap-4">
