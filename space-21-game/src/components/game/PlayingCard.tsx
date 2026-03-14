@@ -43,11 +43,11 @@ export function PlayingCard({ card, index = 0 }: Props) {
     );
   }
 
-  const rank = card.face.slice(1);
+  const rank = card.face?.slice(1) || '';
   const rankIndex = parseInt(rank) - 1;
-  const rankSymbol = rankSymbols[rankIndex];
-  const suitSymbol = suitSymbols[card.suit];
-  const color = suitColors[card.suit];
+  const rankSymbol = rankSymbols[rankIndex] || 'A';
+  const suitSymbol = suitSymbols[card.suit] || '♠';
+  const color = suitColors[card.suit] || '#06B6D4';
 
   return (
     <motion.div
