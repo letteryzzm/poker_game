@@ -1,6 +1,0 @@
-{"file": ".trellis/workflow.md", "reason": "Project workflow and conventions"}
-{"file": ".trellis/spec/backend/index.md", "reason": "Backend development guide"}
-{"file": ".trellis/spec/frontend/index.md", "reason": "Frontend development guide"}
-{"file": ".trellis/spec/backend/game-data-structures.md", "reason": "游戏数据结构类型定义"}
-{"file": ".trellis/spec/frontend/game-components.md", "reason": "游戏组件规格"}
-{"file": ".trellis/spec/frontend/game-state.md", "reason": "游戏状态管理规格"}
